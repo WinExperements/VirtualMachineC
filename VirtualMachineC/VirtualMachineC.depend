@@ -1,0 +1,19 @@
+# depslib dependency file v1.0
+1643930191 source:d:\info\projects\virtualmachinec\main.c
+	<stdio.h>
+	<stdlib.h>
+	"cpu.h"
+
+1643928164 source:d:\info\projects\virtualmachinec\port.c
+	"port.h"
+	<stdio.h>
+
+1643927839 d:\info\projects\virtualmachinec\port.h
+
+1643930340 source:d:\info\projects\virtualmachinec\cpu.c
+	"cpu.h"
+	"port.h"
+	<stdio.h>
+
+1643929629 d:\info\projects\virtualmachinec\cpu.h
+
