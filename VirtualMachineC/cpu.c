@@ -3,9 +3,12 @@
 #include<stdio.h>
 
 cpu_t cpu;
+void pushC(int);
+int popC();
 
 void cpu_init() {
     printf("DEBUG: CPU starting\n");
+    cpu.sp = 256; // top of memory
 }
 
 int fetch() {
@@ -27,6 +30,12 @@ void cpu_start() {
             break;
         case MOVR:
             cpu.regs[fetch()] = cpu.regs[fetch()];
+            break;
+        case PUSH:
+            pushC(cpu.regs[fetch()]);
+            break;
+        case POP:
+            cpu.regs[fetch()] = popC();
             break;
         case ADD: {
             int num = fetch();
@@ -55,6 +64,10 @@ void cpu_start() {
         case JMP:
             cpu.pc = cpu.pc + fetch();
             break;
+        case CALL:
+            cpu.ret = cpu.pc+2;
+            cpu.pc = cpu.pc + fetch();
+            break;
         case HLT:
             cpu.running = 0;
             break;
@@ -65,15 +78,25 @@ cpu_t cpu_getCPU() {
     return cpu;
 }
 void cpu_dump() {
-    printf("Dump:\nPC = %d\nSP = %d",cpu.pc,cpu.sp);
-    for (int i = 0; i < 25; i++) {
+    printf("Dump:\nPC = %d\nSP = %d\nRET = %d",cpu.pc,cpu.sp,cpu.ret);
+    for (int i = 0; i < 10; i++) {
         printf("\nreg%d = %d",i,cpu.regs[i]);
     }
     printf("\nDump of memory: \n");
     for (int m = 0; m < 256; m++) {
         printf("%d ",cpu.memory[m]);
     }
+    printf("\n");
 }
 void cpu_setCPU(cpu_t cput) {
     cpu = cput;
+}
+void pushC(int data) {
+    cpu.memory[cpu.sp] = data;
+    cpu.sp = cpu.sp-1;
+}
+int popC() {
+    int curSp = cpu.sp;
+    cpu.sp = cpu.sp+1;
+    return cpu.memory[curSp+1];
 }

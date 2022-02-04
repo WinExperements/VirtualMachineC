@@ -4,8 +4,9 @@
 typedef struct {
     int sp;
     int pc;
+    int ret;
     int memory[256];
-    int regs[25];
+    int regs[10];
     int running;
 } cpu_t;
 typedef enum Opcode {
