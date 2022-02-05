@@ -5,9 +5,13 @@ typedef struct {
     int sp;
     int pc;
     int ret;
-    int memory[256];
+    int memory[64*1024];
     int regs[10];
     int running;
+    // condition flags
+    int eq;
+    int less;
+    int great;
 } cpu_t;
 typedef enum Opcode {
     // == Memory instructions ===
@@ -29,12 +33,14 @@ typedef enum Opcode {
     JMP,
     CALL,
     // == if jump ==
+    CMP,
     JEQ,
     JNE,
     JG,
     JNQ,
     JLE,
-    JNL,
+    JLEQ,
+    JGQ,
     // == i/o ==
     INB,
     OUTB,

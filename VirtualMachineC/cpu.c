@@ -1,5 +1,6 @@
 #include "cpu.h"
 #include "port.h"
+#include "devs/console.h"
 #include<stdio.h>
 
 cpu_t cpu;
@@ -7,8 +8,8 @@ void pushC(int);
 int popC();
 
 void cpu_init() {
-    printf("DEBUG: CPU starting\n");
     cpu.sp = 256; // top of memory
+    console_add();
 }
 
 int fetch() {
@@ -68,6 +69,56 @@ void cpu_start() {
             cpu.ret = cpu.pc+2;
             cpu.pc = cpu.pc + fetch();
             break;
+        case CMP: {
+            int cmpVal1 = cpu.regs[fetch()];
+            int cmpVal2 = cpu.regs[fetch()];
+            if (cmpVal1 == cmpVal2) cpu.eq = 1; else if (cmpVal1 > cmpVal2) cpu.great = 1;
+            else if (cmpVal1 < cmpVal2) cpu.less = 1; else if (cmpVal1 >= cmpVal2) {cpu.eq = 1; cpu.great = 1;}
+            else if (cmpVal1 <= cmpVal2) {cpu.eq = 1; cpu.less = 1;}
+        } break;
+        case JEQ:
+            if (cpu.eq) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case JNE:
+            if (!cpu.eq) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case JG:
+            if (cpu.great) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case JNQ:
+            if (!cpu.great) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case JLE:
+            if (cpu.less) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case JLEQ:
+            if (cpu.less || cpu.eq) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case JGQ:
+            if (cpu.great || cpu.eq) {
+                cpu.pc = cpu.pc+fetch();
+            }
+            break;
+        case INB:
+            cpu.regs[fetch()] = port_read(fetch());
+            break;
+        case OUTB: {
+            int data = cpu.regs[fetch()];
+            int port = fetch();
+            port_write(port,data);
+        } break;
         case HLT:
             cpu.running = 0;
             break;

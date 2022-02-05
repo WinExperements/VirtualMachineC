@@ -1,50 +1,48 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "cpu.h"
+#include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
-int main()
-{
-    int i = 0;
+#include "cpu.h"
+#include "devs/console.h"
+
+void addPrint(char *,int);
+cpu_t cpu;
+int prgPointer;
+
+int main(int argc,char *argv[]) {
     cpu_init();
-    cpu_t cpu = cpu_getCPU();
-    cpu.memory[i++] = LDR;
-    cpu.memory[i++] = 0;
-    cpu.memory[i++] = 25;
-    cpu.memory[i++] = LDR;
-    cpu.memory[i++] = 1;
-    cpu.memory[i++] = 15;
-    cpu.memory[i++] = ADD;
-    cpu.memory[i++] = 2;
-    cpu.memory[i++] = 0;
-    cpu.memory[i++] = 1;
-    cpu.memory[i++] = PUSH;
-    cpu.memory[i++] = 1;
-    cpu.memory[i++] = POP;
-    cpu.memory[i++] = 3;
-    cpu.memory[i++] = HLT;
+    cpu = cpu_getCPU();
+    addPrint("Hello!",6);
+    cpu.memory[prgPointer++] = HLT;
     cpu_setCPU(cpu);
     cpu_start();
-    cpu_dump();
-    getchar();
-    printf("Do you want to export current program? Enter Y or N: ");
-    char buff[1];
-    scanf("%s",buff);
-    if (!strcmp("Y",buff) || !strcmp("y",buff)) {
-        printf("Saving!\n");
-        FILE *f = fopen("prgDump.bin","w");
-        if (!f) {
-            printf("Save fail: Failed to open file!\n");
-            exit(1);
-        }
-        if (fwrite(cpu.memory,sizeof(int),256,f) != 256) {
-            printf("Save fail: Failed to write dump to file!\n");
-            exit(1);
-        }
+    if (argc > 1 && !strcmp("--save",argv[1])) {
+        FILE *f = fopen("dump.bin","w");
+        if (!f) return 1;
+        if (fwrite(cpu.memory,sizeof(int),prgPointer-1,f) != prgPointer-1) {fclose(f); return 0;}
         fclose(f);
-        printf("Saved!\n");
-    } else {
-        printf("OK, exit!\n");
+        printf("\nDump saved!\n");
     }
-    printf("Goodbay!\n");
     return 0;
+}
+void addPrint(char *msg,int size) {
+    cpu.memory[prgPointer++] = LDR;
+    cpu.memory[prgPointer++] = 0;
+    cpu.memory[prgPointer++] = CONSOLE_START;
+    cpu.memory[prgPointer++] = OUTB;
+    cpu.memory[prgPointer++] = 0;
+    cpu.memory[prgPointer++] = 0;
+    for (int i = 0; i < size; i++) {
+            cpu.memory[prgPointer++] = LDR;
+        cpu.memory[prgPointer++] = 0;
+        cpu.memory[prgPointer++] = msg[i];
+        cpu.memory[prgPointer++] = OUTB;
+        cpu.memory[prgPointer++] = 0;
+        cpu.memory[prgPointer++] = 0;
+    }
+    cpu.memory[prgPointer++] = LDR;
+    cpu.memory[prgPointer++] = 0;
+    cpu.memory[prgPointer++] = CONSOLE_END;
+    cpu.memory[prgPointer++] = OUTB;
+    cpu.memory[prgPointer++] = 0;
+    cpu.memory[prgPointer++] = 0;
 }
