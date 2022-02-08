@@ -30,7 +30,13 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="D:/Download/SDL2-2.0.20/x86_64-w64-mingw32/include" />
 		</Compiler>
+		<Linker>
+			<Add library="SDL2main" />
+			<Add library="SDL2.dll" />
+			<Add directory="D:/Download/SDL2-2.0.20/x86_64-w64-mingw32/lib" />
+		</Linker>
 		<Unit filename="cpu.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -39,6 +45,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="devs/console.h" />
+		<Unit filename="devs/display.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="devs/display.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>

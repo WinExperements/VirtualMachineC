@@ -122,6 +122,66 @@ void cpu_start() {
         case HLT:
             cpu.running = 0;
             break;
+        case ADDI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] + num2;
+           } break;
+        case SUBI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] - num2;
+           } break;
+        case DIVI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] / cpu.regs[num2];
+           } break;
+        case MULI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] * cpu.regs[num2];
+           } break;
+        case AND: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] & cpu.regs[num2];
+           } break;
+        case ANDI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] & num2;
+           } break;
+        case OR: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] | cpu.regs[num2];
+           } break;
+        case ORI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] & num2;
+           } break;
+        case XOR: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] ^ cpu.regs[num2];
+           } break;
+        case XORI: {
+            int num = fetch();
+            int num1 = fetch();
+            int num2 = fetch();
+            cpu.regs[num] = cpu.regs[num1] ^ num2;
+           } break;
         }
     }
 }

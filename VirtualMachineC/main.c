@@ -3,6 +3,7 @@
 #include<string.h>
 #include "cpu.h"
 #include "devs/console.h"
+#include "devs/display.h"
 
 void addPrint(char *,int);
 cpu_t cpu;
@@ -12,6 +13,7 @@ int main(int argc,char *argv[]) {
     cpu_init();
     cpu = cpu_getCPU();
     addPrint("Hello!",6);
+    addPrint("\nERROR",7);
     cpu.memory[prgPointer++] = HLT;
     cpu_setCPU(cpu);
     cpu_start();
